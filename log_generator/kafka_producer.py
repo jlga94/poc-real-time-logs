@@ -30,7 +30,7 @@ def connect_kafka_producer(kafka_broker):
 if __name__ == '__main__':
     topic_name = "http_log"
     #kafka_broker = os.getenv('KAFKA_BROKER')
-    kafka_broker = "10.15.19.76:9092"
+    kafka_broker = "10.15.19.161:9092"
     producer = connect_kafka_producer(kafka_broker)
     while(True):
         sleep(5)
