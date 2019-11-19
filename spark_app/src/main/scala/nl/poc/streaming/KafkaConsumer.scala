@@ -9,6 +9,10 @@ import org.apache.spark.sql.types._
 object KafkaConsumer {
   def main(args: Array[String]): Unit = {
 
+    if (args.length != 3) {
+      println("Please provide <kafka.bootstrap.servers> <checkpointLocation> and <OutputLocation>")
+    }
+
     val spark = SparkSession
       .builder()
       .appName("Geo-Kafka-Demo")
@@ -19,7 +23,7 @@ object KafkaConsumer {
 
     val ds = spark.readStream
       .format("kafka")
-      .option("kafka.bootstrap.servers", "10.15.19.161:9092")
+      .option("kafka.bootstrap.servers", args(0))
       .option("subscribe", "http_log")
       .option("startingOffsets", "earliest")
       .option("failOnDataLoss", "false")
@@ -29,12 +33,12 @@ object KafkaConsumer {
       .selectExpr("CAST(value AS STRING)")
       .as[String]
 
-    val hdfsDF = df.writeStream
-      .option("checkpointLocation","/Users/joseaguilar/Documents/Repositories/checkpoint")
+    val messagesDF = df.writeStream
+      .option("checkpointLocation",args(1))
       .format("text")
-      .start("/Users/joseaguilar/Documents/Repositories/Data")
+      .start(args(2))
 
-    hdfsDF.awaitTermination()
+    messagesDF.awaitTermination()
 
   }
 }

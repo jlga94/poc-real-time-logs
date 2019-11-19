@@ -28,9 +28,13 @@ def connect_kafka_producer(kafka_broker):
         return _producer
 
 if __name__ == '__main__':
-    topic_name = "http_log"
-    #kafka_broker = os.getenv('KAFKA_BROKER')
-    kafka_broker = "10.15.19.161:9092"
+    parser = argparse.ArgumentParser(description="Kafka Producer")
+    parser.add_argument("--topic"      , "-t", dest="topic"      , help="topic from kafka to producer messages" , type=str)
+    parser.add_argument("--broker"      , "-b", dest="broker"      , help="kafka broker endpoint" , type=str)
+    args = parser.parse_args()
+
+    topic_name = args.topic
+    kafka_broker = args.broker
     producer = connect_kafka_producer(kafka_broker)
     while(True):
         sleep(5)
