@@ -55,6 +55,8 @@ object KafkaConsumer {
 
     val regex = """^(\\S+) (\\S+) (\\S+) \\[([\\w:/]+\\s[+\\-]\\d{4})\\] \"(\\S+)\\s?(\\S+)?\\s?(\\S+)?\" (\\d{3}|-) (\\d+|-)\\s?\"?([^\"]*)\"?\\s?\"?([^\"]*)?\"?$""".r
 
+    val PATTERN = """^(\S+) (\S+) (\S+) \[([\w:/]+\s[+\-]\d{4})\] "(\S+)\s?(\S+)?\s?(\S+)?" (\d{3}|-) (\d+|-)\s?"?([^"]*)"?\s?"?([^"]*)?"?$""".r
+
     import spark.implicits._
 
     val ds = spark.readStream
@@ -68,9 +70,8 @@ object KafkaConsumer {
     val df = ds
       .selectExpr("CAST(value AS STRING)")
       .as[String].map(s => {
-          println(s)
-          val PATTERN = """^(\S+) (\S+) (\S+) \[([\w:/]+\s[+\-]\d{4})\] "(\S+)\s?(\S+)?\s?(\S+)?" (\d{3}|-) (\d+|-)\s?"?([^"]*)"?\s?"?([^"]*)?"?$""".r
-          val options = PATTERN.findFirstMatchIn(s)
+          println(s.trim())
+          val options = PATTERN.findFirstMatchIn(s.trim())
           val matched = options.get
           println(matched)
         ApacheLog(matched.group(1),matched.group(2),matched.group(3),matched.group(4),matched.group(5),matched.group(6),matched.group(7),matched.group(8),matched.group(9),matched.group(10),matched.group(11))
