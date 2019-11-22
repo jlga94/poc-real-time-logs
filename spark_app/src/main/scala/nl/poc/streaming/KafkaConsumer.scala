@@ -18,7 +18,7 @@ case class ApacheLog(host: String,
                      req_method: String,
                      req_url: String,
                      req_protocol: String,
-                     status: String,
+                     status: Int,
                      bytes: Int,
                      referrer: String,
                      user_agent: String
@@ -65,7 +65,7 @@ object KafkaConsumer {
             matched.group(5),
             matched.group(6),
             matched.group(7),
-            matched.group(8),
+            matched.group(8).toInt,
             matched.group(9).toInt,
             matched.group(10),
             matched.group(11)
