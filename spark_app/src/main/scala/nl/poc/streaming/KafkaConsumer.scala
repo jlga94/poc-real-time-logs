@@ -46,7 +46,7 @@ object KafkaConsumer {
 
     val ds = spark.readStream
       .format("kafka")
-      .option("kafka.bootstrap.servers", "10.15.19.89:9092")
+      .option("kafka.bootstrap.servers", "10.15.19.59:9092")
       .option("subscribe", "http_log")
       .option("startingOffsets", "earliest")
       .option("failOnDataLoss", "false")
