@@ -107,11 +107,6 @@ object KafkaConsumer {
 
   def main(args: Array[String]): Unit = {
     val conf = new Conf(args)
-    /*
-    if (args.length != 3) {
-      println("Please provide <kafka.bootstrap.servers> <checkpointLocation> and <OutputLocation>")
-    }
-     */
 
     val spark = SparkSession
       .builder()
@@ -137,36 +132,35 @@ object KafkaConsumer {
     val df = ds
       .selectExpr("CAST(value AS STRING)")
       .as[String].map(stream => {
-          val options = PATTERN.findFirstMatchIn(stream.trim())
-          val matched = options.get
-          val geoIp = MaxMindIpGeo(geo_filename, 1000, synchronized = true)
-          val iplocation = geoIp.getLocation(matched.group(1)).getOrElse(null)
+        val matched = PATTERN.findFirstMatchIn(stream.trim()).get
+        val geoIp = MaxMindIpGeo(geo_filename, 1000, synchronized = true)
+        val iplocation = geoIp.getLocation(matched.group(1)).getOrElse(null)
 
-          val data_location = get_data_location(iplocation)
+        val data_location = get_data_location(iplocation)
 
-          ApacheLog(
-                matched.group(1),
-                matched.group(3),
-                new Timestamp(dateFormat.parse(matched.group(4)).getTime()),
-                matched.group(5),
-                matched.group(6),
-                matched.group(7),
-                matched.group(8).toInt,
-                matched.group(9).toInt,
-                matched.group(10),
-                matched.group(11),
-                data_location.countryCode,
-                data_location.countryName,
-                data_location.region,
-                data_location.city,
-                data_location.latitude,
-                data_location.longitude,
-                data_location.postalCode,
-                data_location.continent,
-                data_location.regionCode,
-                data_location.continentCode,
-                data_location.timezone
-              )
+        ApacheLog(
+          matched.group(1),
+          matched.group(3),
+          new Timestamp(dateFormat.parse(matched.group(4)).getTime()),
+          matched.group(5),
+          matched.group(6),
+          matched.group(7),
+          matched.group(8).toInt,
+          matched.group(9).toInt,
+          matched.group(10),
+          matched.group(11),
+          data_location.countryCode,
+          data_location.countryName,
+          data_location.region,
+          data_location.city,
+          data_location.latitude,
+          data_location.longitude,
+          data_location.postalCode,
+          data_location.continent,
+          data_location.regionCode,
+          data_location.continentCode,
+          data_location.timezone
+        )
       })
 
     val query = df.writeStream
@@ -174,6 +168,5 @@ object KafkaConsumer {
       .start()
 
     query.awaitTermination()
-
   }
 }
