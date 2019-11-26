@@ -22,3 +22,4 @@ libraryDependencies += "org.apache.spark" %% "spark-streaming-kafka-0-10" % spar
 libraryDependencies += "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersion
 
 libraryDependencies += "com.sanoma.cda" %% "maxmind-geoip2-scala" % "1.5.5"
+libraryDependencies += "org.rogach" %% "scallop" % "3.3.1"

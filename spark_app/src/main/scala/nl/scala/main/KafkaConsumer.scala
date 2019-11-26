@@ -1,8 +1,9 @@
-package nl.poc.streaming
+package nl.scala.main
 
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.sql.Timestamp
+import nl.scala.utils.Conf
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.DataFrame
@@ -13,7 +14,6 @@ import org.apache.spark.sql.types._
 import com.sanoma.cda.geoip.{IpLocation, MaxMindIpGeo}
 
 case class ApacheLog(host: String,
-                     hyphen: String,
                      user_id: String,
                      datetime: Timestamp,
                      req_method: String,
@@ -106,7 +106,7 @@ object KafkaConsumer {
   }
 
   def main(args: Array[String]): Unit = {
-
+    val conf = new Conf(args)
     /*
     if (args.length != 3) {
       println("Please provide <kafka.bootstrap.servers> <checkpointLocation> and <OutputLocation>")
@@ -122,14 +122,14 @@ object KafkaConsumer {
     val dateFormat = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss ZZZZ", Locale.ENGLISH)
     val PATTERN = """^(\S+) (\S+) (\S+) \[([\w:/]+\s[+\-]\d{4})\] "(\S+)\s?(\S+)?\s?(\S+)?" (\d{3}|-) (\d+|-)\s?"?([^"]*)"?\s?"?([^"]*)?"?$""".r
 
-    val geo_filename = "/Users/joseaguilar/Documents/Repositories/GeoIP/GeoLite2-City_20191105/GeoLite2-City.mmdb"
+    val geo_filename = conf.geo_filename()
 
     import spark.implicits._
 
     val ds = spark.readStream
       .format("kafka")
-      .option("kafka.bootstrap.servers", "10.15.19.59:9092")
-      .option("subscribe", "http_log")
+      .option("kafka.bootstrap.servers", conf.kafka_broker())
+      .option("subscribe", conf.topic())
       .option("startingOffsets", "earliest")
       .option("failOnDataLoss", "false")
       .load()
@@ -146,7 +146,6 @@ object KafkaConsumer {
 
           ApacheLog(
                 matched.group(1),
-                matched.group(2),
                 matched.group(3),
                 new Timestamp(dateFormat.parse(matched.group(4)).getTime()),
                 matched.group(5),
