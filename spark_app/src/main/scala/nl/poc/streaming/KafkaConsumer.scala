@@ -119,7 +119,7 @@ object KafkaConsumer {
       .master("local[2]")
       .getOrCreate()
 
-    val dateFormat = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss", Locale.ENGLISH)
+    val dateFormat = new SimpleDateFormat("dd/MMM/yyyy:HH:mm:ss ZZZZ", Locale.ENGLISH)
     val PATTERN = """^(\S+) (\S+) (\S+) \[([\w:/]+\s[+\-]\d{4})\] "(\S+)\s?(\S+)?\s?(\S+)?" (\d{3}|-) (\d+|-)\s?"?([^"]*)"?\s?"?([^"]*)?"?$""".r
 
     val geo_filename = "/Users/joseaguilar/Documents/Repositories/GeoIP/GeoLite2-City_20191105/GeoLite2-City.mmdb"
