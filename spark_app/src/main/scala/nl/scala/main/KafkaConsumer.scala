@@ -165,6 +165,7 @@ object KafkaConsumer {
 
     val query = df.writeStream
       .format("console")
+      .option("truncate","false")
       .start()
 
     query.awaitTermination()

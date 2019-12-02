@@ -23,3 +23,10 @@ libraryDependencies += "org.apache.spark" %% "spark-sql-kafka-0-10" % sparkVersi
 
 libraryDependencies += "com.sanoma.cda" %% "maxmind-geoip2-scala" % "1.5.5"
 libraryDependencies += "org.rogach" %% "scallop" % "3.3.1"
+
+assemblyMergeStrategy in assembly := {
+  case PathList("META-INF", xs @_*) => MergeStrategy.discard
+  case _ => MergeStrategy.first
+}
+
+test in assembly := {}
