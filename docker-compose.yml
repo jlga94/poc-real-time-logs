@@ -79,6 +79,8 @@ services:
     depends_on:
     - "kafka0"
     - "schema-registry"
+    volumes:
+      - log_dir:/logs
 
   ksql:
     image: confluentinc/cp-ksql-server:5.2.2
@@ -148,3 +150,11 @@ services:
     image: streamsets/datacollector
     ports:
       - "18630:18630"
+
+volumes:
+  log_dir:
+    driver: local
+    driver_opts:
+      type: none
+      device: /tmp/logs
+      o: bind
