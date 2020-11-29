@@ -156,5 +156,5 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /tmp/logs
+      device: /tmp
       o: bind

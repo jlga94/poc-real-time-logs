@@ -1,12 +1,14 @@
 import asyncio
 import json
-
 import requests
 
+from fake_logs.fake_logs    import FakeLogs
+from fake_logs.line_pattern import LinePattern
+
 KAFKA_CONNECT_URL = "http://localhost:8083/connectors"
-TOPIC_NAME = "logs.iteration"
-CONNECTOR_NAME = "iteration"
-FILENAME = "myfile"
+TOPIC_NAME = "logs.http.apache"
+CONNECTOR_NAME = "logs.http.apache"
+FILENAME = "apache"
 
 def configure_connector():
     """Calls Kafka Connect to create the Connector"""
@@ -48,14 +50,19 @@ def configure_connector():
 
 
 async def log():
-    """Continually appends to the end of a file"""
-    with open(f"/tmp/{FILENAME}.log", "w") as f:
-        iteration = 0
-        while True:
-            f.write(f"log number {iteration}\n")
-            f.flush()
-            await asyncio.sleep(1.0)
-            iteration += 1
+    filename = f"/tmp/{FILENAME}.log"
+    num_lines = 500
+    sleep = 5
+    file_format = "apache"
+
+    line_pattern = LinePattern(None, date_pattern=None, file_format=file_format, fake_tokens=None)
+    FakeLogs(
+        filename=filename,
+        num_lines=num_lines,
+        sleep=sleep,
+        line_pattern=line_pattern,
+        file_format=file_format
+    ).run()
 
 
 async def log_task():
