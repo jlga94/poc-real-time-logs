@@ -33,7 +33,7 @@ class FakeLogs:
 				os.makedirs(dirname, exist_ok=True)
 
 			_open = gzip.open if self.filename.lower().endswith(".gz") else open
-			self.file = _open(self.filename, "wt")
+			self.file = _open(self.filename, "at")
 
 	def _close_file(self):
 		if self.filename is not None:

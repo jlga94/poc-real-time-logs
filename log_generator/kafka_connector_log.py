@@ -33,7 +33,7 @@ def configure_connector():
                 "config": {
                     "connector.class": "FileStreamSource",
                     "topic": TOPIC_NAME,  # TODO
-                    "tasks.max": 1,  # TODO
+                    "tasks.max": 2,  # TODO
                     "file": f"/logs/{FILENAME}.log",
                     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
                     "key.converter.schemas.enable": "false",
@@ -51,18 +51,20 @@ def configure_connector():
 
 async def log():
     filename = f"/tmp/{FILENAME}.log"
-    num_lines = 500
-    sleep = 5
+    num_lines = 15
+    sleep = 15
     file_format = "apache"
 
     line_pattern = LinePattern(None, date_pattern=None, file_format=file_format, fake_tokens=None)
-    FakeLogs(
-        filename=filename,
-        num_lines=num_lines,
-        sleep=sleep,
-        line_pattern=line_pattern,
-        file_format=file_format
-    ).run()
+    while True:
+        FakeLogs(
+            filename=filename,
+            num_lines=num_lines,
+            sleep=None,
+            line_pattern=line_pattern,
+            file_format=file_format
+        ).run()
+        await asyncio.sleep(sleep)
 
 
 async def log_task():
